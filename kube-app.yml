@@ -1,24 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: custom-image-deployment
+  name: my-private-app
   labels:
-    app: my-app
+    app: my-project
 spec:
-  # The number of replicated Pods to run
+  # Ensure only one replica of the application is running
   replicas: 1
   selector:
     matchLabels:
-      app: my-app
+      app: my-project
   template:
     metadata:
       labels:
-        app: my-app
+        app: my-project
     spec:
       containers:
-      - name: my-custom-container
-        # Using the provided image ID: 31e506f5167d
-        image: 31e506f5167d
-        # Assuming the application runs on port 8080 (adjust as needed)
+      - name: app-container
+        # Image from your private Docker registry
+        image: 98.84.99.73:5000/my-project-app:4
+        # Assuming the container exposes a web port (e.g., 80)
         ports:
-        - containerPort: 8080
+        - containerPort: 80
+        # Define a simple resource request for reliable scheduling
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "250m"

@@ -18,7 +18,7 @@ spec:
       containers:
       - name: app-container
         # Image from your private Docker registry
-        image: myappimage:latest
+        image: krishnakrishnakumar/myappimage:latest
         # Assuming the container exposes a web port (e.g., 80)
         ports:
         - containerPort: 80

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-private-app-service
+  labels:
+    app: my-project
+spec:
+  type: LoadBalancer
+  selector:
+    app: my-project
+  ports:
+    - protocol: TCP
+      port: 80          # Port exposed by the service
+      targetPort: 80    # Port on the container

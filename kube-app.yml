@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-private-app
+  labels:
+    app: my-project
+spec:
+  # Ensure only one replica of the application is running
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-project
+  template:
+    metadata:
+      labels:
+        app: my-project
+    spec:
+      containers:
+      - name: app-container
+        # Image from your private Docker registry
+        image: krishnakrishnakumar/myappimage:latest
+        # Assuming the container exposes a web port (e.g., 80)
+        ports:
+        - containerPort: 80
+        # Define a simple resource request for reliable scheduling
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+          requests:
+            memory: "64Mi"
+            cpu: "250m"

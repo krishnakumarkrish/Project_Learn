@@ -1,30 +1,26 @@
-FROM ubuntu
+FROM alpine
 
-# Install dependencies
-RUN apt update -y 
-RUN apt install apache2 -y
-RUN apt search wget 
-RUN apt install wget 
-RUN apt install unzip
+# Install dependencies using Alpine's apk manager
+RUN apk update && \
+    apk add --no-cache apache2 wget unzip
 
-# change directory
+# Change directory
 WORKDIR /var/www/html/
 
-# download webfiles
+# Download webfiles
 RUN wget https://github.com/krishnakumarkrish/Project_Learn/archive/refs/heads/main.zip
 
-# unzip folder
+# Unzip folder
 RUN unzip main.zip
 
-# copy files into html directory
-RUN cp -r  Project_Learn-main/* /var/www/html/
+# Copy files into html directory
+RUN cp -r Project_Learn-main/* /var/www/html/
 
-# remove unwanted folder
-RUN rm -rf main.zip
+# Remove unwanted folder and zip
+RUN rm -rf main.zip Project_Learn-main
 
-# exposes port 80 on the container
+# Expose port 80 on the container
 EXPOSE 80
 
-# set the default application that will start when the container start
-#ENTRYPOINT ["/usr/sbin/httpd", "-D", "FOREGROUND"]
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+# Alpine's httpd start command
+CMD ["httpd", "-D", "FOREGROUND"]

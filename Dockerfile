@@ -1,5 +1,8 @@
 FROM ubuntu
 
+# Avoid prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Install dependencies
 RUN apt update -y 
 RUN apt install apache2 -y

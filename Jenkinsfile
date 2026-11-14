@@ -1,11 +1,27 @@
 pipeline {
     agent any
 
+    tools {
+        // Reference the SonarQube scanner tool name you configured in Jenkins Tools
+        // Note: Ensure you have the "SonarQube Scanner" plugin installed in Jenkins
+        sonarQubeScanner 'SonarScanner'
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
                 // Pulls code from your GitHub repository using your credentials
                 git branch: 'main', credentialsId: 'Cjenkins', url: 'https://github.com/krishnakumarkrish/Project_Learn.git'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                // Uses the SonarQube server configuration named 'SonarQube-Server'
+                withSonarQubeEnv('SonarQube-Server') {
+                    // Executes the scanner; reads configuration from 'sonar-project.properties' in your project root
+                    sh 'sonar-scanner'
+                }
             }
         }
 
@@ -17,10 +33,10 @@ pipeline {
             }
         }
 
-         stage('Clear old Docker Image') {
+        stage('Clear old Docker Image') {
             steps {
-                // Builds the updated Docker image and tags it as portfolio:latest
-                sh 'docker rmi portfolio'
+                // Removes the old docker image to free up space
+                sh 'docker rmi portfolio || true'
             }
         }
 

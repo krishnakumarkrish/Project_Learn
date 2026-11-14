@@ -8,19 +8,21 @@ pipeline {
                 git branch: 'main', credentialsId: 'Cjenkins', url: 'https://github.com/krishnakumarkrish/Project_Learn.git'
             }
         }
-
-        stage('SonarQube Analysis') {
+		
+		stage('SonarQube Analysis') {
             steps {
                 script {
-                    // Dynamically resolves the SonarScanner tool installation path
                     def scannerHome = tool 'SonarScanner'
                     withSonarQubeEnv('SonarQube-Server') {
-                        // Executes the scanner using the resolved path and project properties file
-                        sh "${scannerHome}/bin/sonar-scanner"
+                    // Explicitly bind the credential ID 'sonar-qube' to SONAR_TOKEN
+                     withCredentials([string(credentialsId: 'sonar-qube', variable: 'SONAR_TOKEN')]) {
+                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.token=${env.SONAR_TOKEN}"
+                        }
                     }
-                }
+                }        
             }
         }
+		
 
         stage('Stop Old Container') {
             steps {

@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        // Correct tool identifier for SonarQube Runner in Jenkins declarative pipelines
-        sonarRunner 'SonarScanner'
-    }
-
     stages {
         stage('Checkout Code') {
             steps {
@@ -16,10 +11,13 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                // Connects to the SonarQube server configuration named 'SonarQube-Server'
-                withSonarQubeEnv('SonarQube-Server') {
-                    // Executes the scanner using the properties file in the workspace
-                    sh 'sonar-scanner'
+                script {
+                    // Dynamically resolves the SonarScanner tool installation path
+                    def scannerHome = tool 'SonarScanner'
+                    withSonarQubeEnv('SonarQube-Server') {
+                        // Executes the scanner using the resolved path and project properties file
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
                 }
             }
         }
@@ -46,7 +44,7 @@ pipeline {
             }
         }
 
-        stage('Run New Container') {
+        Stage('Run New Container') {
             steps {
                 // Runs the new container on port 8090 mapped to port 80 inside the container
                 sh 'docker run -d --name portfolio_container -p 8090:80 portfolio:latest'

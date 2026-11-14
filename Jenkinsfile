@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        // Corrected tool name for the SonarQube scanner plugin
-        sonar 'SonarScanner'
+        // Correct tool identifier for SonarQube Runner in Jenkins declarative pipelines
+        sonarRunner 'SonarScanner'
     }
 
     stages {

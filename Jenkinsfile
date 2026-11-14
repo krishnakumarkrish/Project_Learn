@@ -17,10 +17,17 @@ pipeline {
             }
         }
 
+         stage('Clear old Docker Image') {
+            steps {
+                // Builds the updated Docker image and tags it as portfolio:latest
+                sh 'docker rmi portfolio'
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 // Builds the updated Docker image and tags it as portfolio:latest
-                sh 'docker build --no-cache -t portfolio1:latest .'
+                sh 'docker build --no-cache -t portfolio:latest .'
             }
         }
 

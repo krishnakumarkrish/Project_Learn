@@ -20,7 +20,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 // Builds the updated Docker image and tags it as portfolio:latest
-                sh 'docker build --no-cache -t portfolio:latest .'
+                sh 'docker build --no-cache -t portfolio1:latest .'
             }
         }
 

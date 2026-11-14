@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 // Pulls code from your GitHub repository using your credentials
-                git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/krishnakumarkrish/Project_Learn.git'
+                git branch: 'main', credentialsId: 'Cjenkins', url: 'https://github.com/krishnakumarkrish/Project_Learn.git'
             }
         }
 

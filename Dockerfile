@@ -8,13 +8,17 @@ RUN apt-get update -y && \
     apt-get install -y --no-install-recommends apache2 wget unzip ca-certificates authbind && \
     rm -rf /var/lib/apt/lists/*
 
-# 2. Configure authbind so www-data can bind to port 80
+# 2. Configure authbind permissions correctly for www-data
 RUN mkdir -p /etc/authbind/byport && \
     touch /etc/authbind/byport/80 && \
-    chmod 500 /etc/authbind/byport/80 && \
-    chown -R www-data:www-data /etc/authbind/byport/80 /var/www/html
+    chmod 755 /etc/authbind/byport/80 && \
+    chown -R www-data:www-data /etc/authbind/byport/80
 
-# 3. Download and set up web files
+# 3. Create Apache runtime directories and set permissions
+RUN mkdir -p /var/run/apache2 /var/lock/apache2 /var/log/apache2 && \
+    chown -R www-data:www-data /var/www/html /var/run/apache2 /var/log/apache2 /var/lock/apache2
+
+# 4. Download and set up web files
 WORKDIR /var/www/html/
 RUN wget https://github.com/krishnakumarkrish/Project_Learn/archive/refs/heads/main.zip && \
     unzip main.zip && \
@@ -22,11 +26,11 @@ RUN wget https://github.com/krishnakumarkrish/Project_Learn/archive/refs/heads/m
     rm -rf main.zip Project_Learn-main && \
     chown -R www-data:www-data /var/www/html
 
-# 4. Switch to non-root user to satisfy SonarQube
+# 5. Switch to non-root user to satisfy SonarQube
 USER www-data
 
 # Expose port 80
 EXPOSE 80
 
-# 5. Use authbind to launch Apache on port 80 under www-data user
+# 6. Use authbind to launch Apache on port 80 under www-data user
 CMD ["authbind", "--deep", "/usr/sbin/apache2", "-D", "FOREGROUND"]

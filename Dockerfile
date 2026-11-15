@@ -3,31 +3,24 @@ FROM ubuntu
 # Avoid interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies, ca-certificates (for secure wget), and libcap2-bin
+# Consolidate package installation, capability configuration, permissions, 
+# and web file downloading into a single RUN instruction
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends apache2 wget unzip libcap2-bin ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
-
-# Grant non-root user (www-data) permission to bind to port 80
-RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/apache2
-
-# Set proper ownership on the web root directory
-RUN chown -R www-data:www-data /var/www/html
-
-# change directory
-WORKDIR /var/www/html/
-
-# download webfiles, extract, copy, and clean up in a single layer
-RUN wget https://github.com/krishnakumarkrish/Project_Learn/archive/refs/heads/main.zip && \
+    rm -rf /var/lib/apt/lists/* && \
+    setcap 'cap_net_bind_service=+ep' /usr/sbin/apache2 && \
+    chown -R www-data:www-data /var/www/html && \
+    cd /var/www/html/ && \
+    wget https://github.com/krishnakumarkrish/Project_Learn/archive/refs/heads/main.zip && \
     unzip main.zip && \
     cp -r Project_Learn-main/* /var/www/html/ && \
     rm -rf main.zip Project_Learn-main
 
-# Switch to non-root user to satisfy SonarQube security rule
+# Switch to non-root user to satisfy SonarQube security rules
 USER www-data
 
-# exposes port 80 on the container
+# Exposes port 80 on the container
 EXPOSE 80
 
-# set the default application that will start when the container starts
+# Set the default application that will start when the container starts
 CMD ["/usr/sbin/apache2", "-D", "FOREGROUND"]

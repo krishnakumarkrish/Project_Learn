@@ -3,9 +3,9 @@ FROM ubuntu
 # Avoid interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies and libcap2-bin for non-root port binding
+# Install dependencies, ca-certificates (for secure wget), and libcap2-bin
 RUN apt-get update -y && \
-    apt-get install -y --no-install-recommends apache2 wget unzip libcap2-bin && \
+    apt-get install -y --no-install-recommends apache2 wget unzip libcap2-bin ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
 # Grant non-root user (www-data) permission to bind to port 80

@@ -12,10 +12,10 @@ pipeline {
 		stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'SonarScanner'
-                    withSonarQubeEnv('SonarQube-Server') {
-                    // Explicitly bind the credential ID 'sonar-qube' to SONAR_TOKEN
-                     withCredentials([string(credentialsId: 'sonar-qube', variable: 'SONAR_TOKEN')]) {
+                    def scannerHome = tool 'CsonarT'
+                    withSonarQubeEnv('CsonarS') {
+                    // Explicitly bind the credential ID 'Csonar' to SONAR_TOKEN
+                     withCredentials([string(credentialsId: 'Csonar', variable: 'SONAR_TOKEN')]) {
                     sh "${scannerHome}/bin/sonar-scanner -Dsonar.token=${env.SONAR_TOKEN}"
                         }
                     }
